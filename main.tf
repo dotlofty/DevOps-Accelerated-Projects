@@ -60,8 +60,8 @@ module "Ansible" {
     {
       dockerQAcontainer = "./playbooks/dockerQAcontainer.yml",
       dockerPRODcontainer = "./playbooks/dockerPRODcontainer.yml",
-      dockerQA_Server_priv_ip = module.Docker[1].private_ip,
-      dockerPROD_Server_priv_ip = module.Docker[0].private_ip,
+      dockerQA_Server_priv_ip = module.Docker[0].private_ip,
+      dockerPROD_Server_priv_ip = module.Docker[1].private_ip,
       keypair = "~/keypairs/lofty"  
     }
   )
@@ -111,6 +111,14 @@ module "Jenkins" {
   }
 }
 
+module "jenkins_elb" {
+  source = "./local-module/jenkins_elb"
+  subnet_id1 = module.vpc.public_subnets[0]
+  subnet_id2 = module.vpc.public_subnets[1]
+  security_id = module.sg.alb-sg-id
+  jenkins_id = module.Jenkins.id
+}
+
 module "sonarqube" {
   source                 = "terraform-aws-modules/ec2-instance/aws"
   name                   = "${var.name}-sonar"
@@ -127,18 +135,27 @@ module "sonarqube" {
   }
 }
 
-module "jenkins_elb" {
-  source = "./local-module/jenkins_elb"
-  subnet_id1 = module.vpc.public_subnets[0]
-  subnet_id2 = module.vpc.public_subnets[1]
-  security_id = module.sg.alb-sg-id
-  jenkins_id = module.Jenkins.id
+module "ALB" {
+  source = "./local-module/ALB"
+  ALB_security = module.sg.alb-sg-id
+  ALB-subnet1 = module.vpc.public_subnets[0]
+  ALB-subnet2 = module.vpc.public_subnets[1]
+  vpc_name = module.vpc.vpc_id
+  Target_EC2 = module.Docker[1].id
 }
 
-# module "Prod_elb" {
-#   source = "./local-module/PROD_elb"
-#   subnet_id1 = module.vpc.public_subnets[0]
-#   subnet_id2 = module.vpc.public_subnets[1]
-#   security_id = module.sg.alb-sg-id
-#   Prod_id = module.Docker[1].id
+# module "ASG" {
+#   source = "./local-module/ASG"
+#   vpc-subnet1 = module.vpc.public_subnets[0]
+#   vpc-subnet2 = module.vpc.public_subnets[1]
+#   alb-arn = module.ALB.alb-arn
+#   ASG-sg = module.sg.docker-sg-id
+#   key_pair = module.key_pair.key_pair_name
+#   dockerPROD_EC2 = module.Docker[1].id
 # }
+
+module "Route53" {
+  source = "./local-module/Route53"
+  lb_dns = module.ALB.alb-DNS
+  lb_zoneid = module.ALB.alb-zone-id
+}

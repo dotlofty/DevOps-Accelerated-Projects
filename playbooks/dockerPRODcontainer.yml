@@ -4,7 +4,7 @@
 
    tasks:
      - name: login to dockerhub
-       command: docker login -u dotlofty -p Motiva@$4U
+       command: docker login -u cloudhight -p CloudHight_Admin123@
 
      - name: Stop any container running
        command: docker stop lofty-container
@@ -15,11 +15,11 @@
        ignore_errors: yes
 
      - name: Remove docker image
-       command: docker rmi dotlofty/j-pipeline
+       command: docker rmi cloudhight/j-pipeline
        ignore_errors: yes
 
      - name: Pull default Docker image
-       command: docker pull dotlofty/j-pipeline
+       command: docker pull cloudhight/j-pipeline
 
      - name:  Create a container
-       command: docker run -it -d --name lofty-container -p 8080:8085 dotlofty/j-pipeline
+       command: docker run -it -d --name lofty-container -p 8080:8085 cloudhight/j-pipeline
