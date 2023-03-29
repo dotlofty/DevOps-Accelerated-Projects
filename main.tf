@@ -144,15 +144,15 @@ module "ALB" {
   Target_EC2 = module.Docker[1].id
 }
 
-module "ASG" {
-  source = "./local-module/ASG"
-  vpc-subnet1 = module.vpc.public_subnets[0]
-  vpc-subnet2 = module.vpc.public_subnets[1]
-  albtg-arn = module.ALB.alb-TG
-  ASG-sg = module.sg.docker-sg-id
-  key_pair = module.key_pair.key_pair_name
-  dockerPROD_EC2 = module.Docker[1].id
-}
+# module "ASG" {
+#   source = "./local-module/ASG"
+#   vpc-subnet1 = module.vpc.public_subnets[0]
+#   vpc-subnet2 = module.vpc.public_subnets[1]
+#   albtg-arn = module.ALB.alb-TG
+#   ASG-sg = module.sg.docker-sg-id
+#   key_pair = module.key_pair.key_pair_name
+#   dockerPROD_EC2 = module.Docker[1].id
+# }
 
 module "Route53" {
   source = "./local-module/Route53"
