@@ -18,7 +18,7 @@ sudo echo "${dockerQA_Server_priv_ip} ansible_user=ec2-user  ansible_ssh_private
 sudo echo "[dockerPROD_Server]" >> /etc/ansible/hosts
 sudo echo "${dockerPROD_Server_priv_ip} ansible_user=ec2-user  ansible_ssh_private_key_file=/home/ec2-user/lofty" >> /etc/ansible/hosts
 sudo chmod 400 /home/ec2-user/lofty  
-echo "license_key: 58459d93f66f6d7c6d6a8b0fe025c218f4bdNRAL" | sudo tee -a /etc/newrelic-infra.yml
+echo "license_key: eu01xx28fc9087c229cd6428cc55448e87b8NRAL" | sudo tee -a /etc/newrelic-infra.yml
 sudo curl -o /etc/yum.repos.d/newrelic-infra.repo https://download.newrelic.com/infrastructure_agent/linux/yum/el/7/x86_64/newrelic-infra.repo
 sudo yum -q makecache -y --disablerepo='*' --enablerepo='newrelic-infra'
 sudo yum install newrelic-infra -y --nobest
